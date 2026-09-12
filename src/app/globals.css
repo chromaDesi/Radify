@@ -29,6 +29,21 @@
 
   --background: var(--color-cream);
   --foreground: var(--color-ink);
+
+  /*
+    Two-tier pixel scale. Plain runtime custom properties, deliberately
+    NOT inside @theme inline below — the settings panel's Pixel Scale
+    control overrides these live via an inline style on <html>, and
+    that only works if they're ordinary custom properties rather than
+    baked Tailwind theme tokens. Both are multiples of 4 so every
+    sprite still lands on a whole device pixel at 125%/150%/175%
+    Windows display scaling. --px is the world tier (tiles, trim,
+    props, HUD chrome); --px-hero is the jukebox group only, sized up
+    so it visually dominates the frame instead of reading as a detail
+    in the room. See CLAUDE.md.
+  */
+  --px: 4px;
+  --px-hero: 8px;
 }
 
 @theme inline {
@@ -108,10 +123,9 @@ body {
   font-family: var(--font-body);
 }
 
-/* pixel art must never be smoothed */
-img,
-canvas,
-svg {
+/* pixel art must never be smoothed — inherited, so this also reaches
+   CSS background-image tiles, not just <img>/<canvas>/<svg> elements */
+html {
   image-rendering: pixelated;
 }
 
