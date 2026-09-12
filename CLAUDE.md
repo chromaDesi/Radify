@@ -27,7 +27,8 @@ Platform target is **desktop only for now** (Chrome/Edge) — the Spotify Web Pl
 ## Deployment
 - **GitHub**: https://github.com/chromaDesi/Radify (public)
 - **Vercel production URL**: https://radify-topaz.vercel.app — plain `radify.vercel.app` was already taken by someone else, confirming the plan's warning not to assume it. **This is the domain to register as the Spotify redirect URI in Phase 1** (alongside `http://localhost:3000/...`) — Spotify doesn't support wildcard redirect URIs, so get this exact value into the Spotify dashboard rather than guessing.
-- Vercel project: `varun-parekhs-projects/radify`. GitHub auto-deploy-on-push isn't wired up yet — `vercel git connect` failed because the Vercel GitHub App isn't authorized on the account yet (an interactive step, not something done from the CLI). Until that's done, ship changes with `vercel deploy` (preview) or `vercel deploy --prod` manually after pushing.
+- Vercel project: `varun-parekhs-projects/radify`. GitHub repo is connected (`chromaDesi/Radify`) — auto-deploy-on-push is wired up.
+- **Vercel Authentication (the project's viewer-login gate) is turned OFF.** It was on by default and caused every `vercel deploy --prod` after connecting Git to fail with "Deployment Blocked: commit email could not be matched to a GitHub account" — a real Vercel limitation with GitHub's privacy-preserving `@users.noreply.github.com` commit email format (which is intentionally kept, not a bug to fix, since switching to a real email would put it in public commit history). Turning this project-level toggle off resolved it immediately. This is fine at Phase 0 (no sensitive data); real access control for later phases is Radify's own Google/Spotify/YouTube OAuth, not Vercel's viewer gate, so there's no need to re-enable it.
 
 ## Conventions
 Conventions will be added here as patterns emerge during implementation. Keep this file updated as decisions get made rather than letting them live only in chat history.
