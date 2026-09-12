@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
+/*
+  Radify pixel-art theme.
+  Palette + fonts are locked (see memory/design-direction.md) — don't
+  colour outside this ramp, and don't reach for rounded corners or soft
+  shadows anywhere in this app.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* warm jukebox-diner palette */
+  --color-cream: #fff8ec;
+  --color-cream-dark: #ffe8c2;
+  --color-wood-light: #c98a4b;
+  --color-wood: #a8632f;
+  --color-wood-dark: #6b3f1d;
+  --color-amber-100: #ffd9a0;
+  --color-amber-300: #ffb347;
+  --color-amber-500: #ff8c1a;
+  --color-amber-700: #d96c00;
+  --color-ember: #e4572e;
+  --color-ember-dark: #b23a1a;
+  --color-gold: #f4c430;
+  --color-ink: #2b1b12;
+  --color-ink-soft: #4a2e1d;
+  --color-vinyl: #241812;
+  --color-smoke: #8a7a6c;
+  --color-neon: #2e8b8b;
+
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-cream: var(--color-cream);
+  --color-cream-dark: var(--color-cream-dark);
+  --color-wood-light: var(--color-wood-light);
+  --color-wood: var(--color-wood);
+  --color-wood-dark: var(--color-wood-dark);
+  --color-amber-100: var(--color-amber-100);
+  --color-amber-300: var(--color-amber-300);
+  --color-amber-500: var(--color-amber-500);
+  --color-amber-700: var(--color-amber-700);
+  --color-ember: var(--color-ember);
+  --color-ember-dark: var(--color-ember-dark);
+  --color-gold: var(--color-gold);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-vinyl: var(--color-vinyl);
+  --color-smoke: var(--color-smoke);
+  --color-neon: var(--color-neon);
+
+  /* every spacing unit lands on a whole pixel — no fractional px at
+     integer sprite scales */
+  --spacing: 4px;
+
+  /* no rounded corners anywhere in the pixel-art idiom */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-full: 0px;
+
+  /* hard-offset shadows, zero blur, standing in for depth */
+  --shadow-pixel-sm: 2px 2px 0 0 var(--color-ink);
+  --shadow-pixel: 4px 4px 0 0 var(--color-ink);
+  --shadow-pixel-lg: 6px 6px 0 0 var(--color-ink);
+
+  --font-ui: var(--font-ui);
+  --font-body: var(--font-body);
+  --font-logo: var(--font-logo);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* pixel art must never be smoothed */
+img,
+canvas,
+svg {
+  image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
