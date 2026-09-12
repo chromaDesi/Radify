@@ -8,16 +8,24 @@ Core idea: multiple source playlists in → one blended, shuffled/curated statio
 ## Design direction
 The UI should feel **homey**, not corporate. Visual language: Minecraft-style pixel art, evoking a jukebox sitting in a sunlit diner — warm light, blocky pixel-art assets, a pixel font, cozy color palette (warm ambers/oranges, soft wood tones) rather than a typical dark "music app" theme. See `memory/design-direction.md`.
 
-## Stack (tentative — confirm before scaffolding code)
-Not yet locked in. Leaning toward Next.js + TypeScript + Tailwind for the frontend (Vercel deploy target), given the tooling already available in this environment. Backend/auth approach for Spotify and YouTube Music OAuth is still TBD — both platforms require server-side token handling.
+## Audience & platform (locked)
+Radify is scoped to **you + up to 4 friends**, not public signup. This isn't a "for now" placeholder — a new Spotify Developer app is capped at 5 allowlisted users in Development Mode, and Extended Quota Mode requires a registered business + 250k MAU, which is out of reach for a hobby project. The app owner (you) must also hold Spotify Premium for the Spotify integration to function at all — the Web Playback SDK does not play full tracks for free accounts.
 
-## Key technical unknowns to resolve early
-- Spotify Web API and YouTube Music (unofficial API / YouTube Data API) both need OAuth; scopes and rate limits differ.
-- "Mixing" playlists means defining an interleaving/shuffle algorithm across sources of different lengths — needs a concrete spec before building.
-- Licensing/playback: neither API lets you serve raw audio directly to a third-party player without going through the respective platform's own playback SDK (Spotify Web Playback SDK, YouTube IFrame Player) — playback will likely stay platform-native per track rather than a single unified audio stream.
+Platform target is **desktop only for now** (Chrome/Edge) — the Spotify Web Playback SDK does not work on iOS Safari and is unreliable on mobile browsers generally.
+
+## Stack (locked)
+- **Next.js (App Router) + TypeScript (strict) + Tailwind v4**, deployed to Vercel Hobby (free, non-commercial-use-only).
+- **Auth.js v5**, self-hosted, no Clerk/Auth0. Google is the primary sign-in identity; Spotify and YouTube are separate "connections," not co-equal sign-in providers (Spotify's `email` field is deprecated, which makes email-based account linking fragile — link on `account_id` instead).
+- **Drizzle + Neon Postgres** (free tier via Vercel Marketplace), introduced in Phase 1, not Phase 0.
+- **Zustand** for client state (the player controller is a long-lived singleton; Context would cause re-render storms on every progress tick).
+
+## Key technical decisions (resolved — see the full plan for detail)
+- Neither Spotify nor YouTube lets a third party re-serve raw audio. Playback stays platform-native via each service's own SDK (Spotify Web Playback SDK, YouTube IFrame Player) behind a shared `PlaybackSink` interface, never a single unified audio stream.
+- Mixing uses a deterministic, seeded weighted round-robin scheduler with source "stickiness" (2–4 track runs per source, not per-track alternation) to minimize the audible cross-platform handoff gap, plus artist-spacing and cross-platform track dedupe.
+- A Google OAuth app in Testing status revokes refresh tokens every 7 days — sign-in and the YouTube data grant are requested as separate scopes so an expired YouTube connection never locks a user out of the app itself. "Connection expired — reconnect" is a first-class UI state.
 
 ## Conventions
-No code yet — conventions will be added here as the stack is chosen and patterns emerge. Keep this file updated as decisions get made rather than letting them live only in chat history.
+Conventions will be added here as patterns emerge during implementation. Keep this file updated as decisions get made rather than letting them live only in chat history.
 
 ## Agents
 See `.claude/agents/` for project-specific subagents:
