@@ -73,6 +73,33 @@
   --font-ui: var(--font-ui);
   --font-body: var(--font-body);
   --font-logo: var(--font-logo);
+
+  /* stepped, not eased — smooth easing reads as "web app wearing a
+     pixel costume" */
+  --animate-dust-drift: dust-drift 6s steps(6) infinite;
+  --animate-glow-flicker: glow-flicker 4s steps(8) infinite;
+}
+
+@keyframes dust-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(2px, -3px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glow-flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 body {
