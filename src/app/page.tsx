@@ -1,4 +1,5 @@
 import { DinerScene } from "@/components/DinerScene";
+import { StationBuilder } from "@/components/StationBuilder";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         </p>
       </div>
       <DinerScene />
+      <StationBuilder />
     </div>
   );
 }
