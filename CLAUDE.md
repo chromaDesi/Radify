@@ -24,6 +24,11 @@ Platform target is **desktop only for now** (Chrome/Edge) — the Spotify Web Pl
 - Mixing uses a deterministic, seeded weighted round-robin scheduler with source "stickiness" (2–4 track runs per source, not per-track alternation) to minimize the audible cross-platform handoff gap, plus artist-spacing and cross-platform track dedupe.
 - A Google OAuth app in Testing status revokes refresh tokens every 7 days — sign-in and the YouTube data grant are requested as separate scopes so an expired YouTube connection never locks a user out of the app itself. "Connection expired — reconnect" is a first-class UI state.
 
+## Deployment
+- **GitHub**: https://github.com/chromaDesi/Radify (public)
+- **Vercel production URL**: https://radify-topaz.vercel.app — plain `radify.vercel.app` was already taken by someone else, confirming the plan's warning not to assume it. **This is the domain to register as the Spotify redirect URI in Phase 1** (alongside `http://localhost:3000/...`) — Spotify doesn't support wildcard redirect URIs, so get this exact value into the Spotify dashboard rather than guessing.
+- Vercel project: `varun-parekhs-projects/radify`. GitHub auto-deploy-on-push isn't wired up yet — `vercel git connect` failed because the Vercel GitHub App isn't authorized on the account yet (an interactive step, not something done from the CLI). Until that's done, ship changes with `vercel deploy` (preview) or `vercel deploy --prod` manually after pushing.
+
 ## Conventions
 Conventions will be added here as patterns emerge during implementation. Keep this file updated as decisions get made rather than letting them live only in chat history.
 
