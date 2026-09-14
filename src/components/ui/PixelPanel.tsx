@@ -17,7 +17,7 @@ export function PixelPanel({
 }) {
   return (
     <div
-      className={`border-4 border-ink bg-cream-dark p-4 ${className}`}
+      className={`border-4 border-ink bg-panel p-4 text-fg ${className}`}
       style={{
         boxShadow:
           "inset 2px 2px 0 var(--color-cream), inset -2px -2px 0 var(--color-wood-dark), 6px 6px 0 0 var(--color-ink)",

@@ -38,14 +38,19 @@ export function DinerScene() {
 
       <div className="scene-vignette pointer-events-none absolute inset-0" />
 
-      {/* props, bottom-anchored to the floor line */}
-      <SceneSprite
-        src="/scene/window-group.png"
-        texelWidth={WINDOW_TEXELS.width}
-        texelHeight={WINDOW_TEXELS.height}
-        priority
-        className="absolute"
-        style={{ left: "10%", bottom: floorBand }}
+      {/* props, bottom-anchored to the floor line. Window is a CSS
+          background (like the tiles above), not next/image — it's the
+          one theme-switching prop, and that only works via a pure CSS
+          [data-theme] override if DinerScene is to stay a server
+          component (see .prop-window in globals.css). */}
+      <div
+        className="prop-window absolute"
+        style={{
+          left: "10%",
+          bottom: floorBand,
+          width: `calc(${WINDOW_TEXELS.width} * var(--px))`,
+          height: `calc(${WINDOW_TEXELS.height} * var(--px))`,
+        }}
       />
       <SceneSprite
         src="/scene/booth.png"

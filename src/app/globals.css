@@ -31,6 +31,17 @@
   --foreground: var(--color-ink);
 
   /*
+    Semantic tokens for the few surfaces/text roles that actually flip
+    in dark mode. Deliberately NOT redefining --color-ink itself for
+    dark mode — it's overloaded (borders, hard shadows, the panel
+    title-strip bg) and those should stay dark/black in both themes;
+    only the panel face and its two text roles need to lighten.
+  */
+  --color-panel: var(--color-cream-dark);
+  --color-fg: var(--color-ink);
+  --color-fg-soft: var(--color-ink-soft);
+
+  /*
     Two-tier pixel scale. Plain runtime custom properties, deliberately
     NOT inside @theme inline below — the settings panel's Pixel Scale
     control overrides these live via an inline style on <html>, and
@@ -44,6 +55,20 @@
   */
   --px: 4px;
   --px-hero: 8px;
+}
+
+/*
+  Dark mode — a night-diner reskin, not a generic palette inversion.
+  Set via data-theme="dark" on <html> (src/lib/store/useUiStore.ts).
+  Only the page background and the panel face/text tokens above change
+  here; borders/shadows/accent colors (--color-ink, gold, amber, ember)
+  are intentionally identical in both themes.
+*/
+[data-theme="dark"] {
+  --background: #150f0c;
+  --color-panel: #2b1f18;
+  --color-fg: #ffe8c2;
+  --color-fg-soft: #c9a876;
 }
 
 @theme inline {
@@ -67,6 +92,10 @@
   --color-vinyl: var(--color-vinyl);
   --color-smoke: var(--color-smoke);
   --color-neon: var(--color-neon);
+
+  --color-panel: var(--color-panel);
+  --color-fg: var(--color-fg);
+  --color-fg-soft: var(--color-fg-soft);
 
   /* every spacing unit lands on a whole pixel — no fractional px at
      integer sprite scales */
@@ -197,6 +226,37 @@ body {
     background-repeat: repeat;
     background-size: calc(48 * var(--px)) calc(48 * var(--px));
   }
+  /* single fixed-size sprite, not a repeating tile — CSS background
+     (not next/image) purely so it can theme-switch without making
+     DinerScene a client component */
+  .prop-window {
+    background-image: url("/scene/window-group.png");
+    background-repeat: no-repeat;
+    background-size: calc(56 * var(--px)) calc(88 * var(--px));
+  }
+}
+
+/* Dark-mode background-image swaps for the tiles/prop above. tile-dust
+   and the jukebox/vinyl/tonearm/booth sprites are deliberately NOT
+   swapped — see the "stays warm in both variants" note in
+   scripts/pixelkit.py. */
+[data-theme="dark"] .tile-wall {
+  background-image: url("/scene-dark/tile-wall.png");
+}
+[data-theme="dark"] .tile-wainscot {
+  background-image: url("/scene-dark/tile-wainscot.png");
+}
+[data-theme="dark"] .tile-floor {
+  background-image: url("/scene-dark/tile-floor.png");
+}
+[data-theme="dark"] .trim-rail {
+  background-image: url("/scene-dark/trim-rail.png");
+}
+[data-theme="dark"] .trim-baseboard {
+  background-image: url("/scene-dark/trim-baseboard.png");
+}
+[data-theme="dark"] .prop-window {
+  background-image: url("/scene-dark/window-group.png");
 }
 
 /* pixel art must never be smoothed — inherited, so this also reaches
@@ -205,13 +265,6 @@ html {
   image-rendering: pixelated;
 }
 
-/*
-  Ambient wash: a hard-stepped radial gradient standing in for the old
-  glow-overlay.png sprite. A gradient has no texels, so it fills any
-  viewport for free with no scaling/blur concerns, and the hard color
-  stops (not a smooth fade) keep it in the same banded idiom as the
-  rest of the art.
-*/
 /*
   Native <dialog> for the settings modal — gets focus trap + Esc-to-close
   for free. Reset the UA default box/position so our own PixelPanel-style
@@ -229,6 +282,13 @@ dialog.settings-dialog::backdrop {
   background-size: calc(4 * var(--px)) calc(4 * var(--px));
 }
 
+/*
+  Ambient wash: a hard-stepped radial gradient standing in for the old
+  glow-overlay.png sprite. A gradient has no texels, so it fills any
+  viewport for free with no scaling/blur concerns, and the hard color
+  stops (not a smooth fade) keep it in the same banded idiom as the
+  rest of the art.
+*/
 .scene-vignette {
   background: radial-gradient(
     ellipse 70% 60% at 50% 35%,
@@ -237,6 +297,19 @@ dialog.settings-dialog::backdrop {
     color-mix(in srgb, var(--color-amber-100) 14%, transparent) 40%,
     color-mix(in srgb, var(--color-amber-100) 14%, transparent) 70%,
     transparent 70%
+  );
+}
+
+/* At night the wash centers on the jukebox instead of the window —
+   it's the room's light source, not ambient daylight. */
+[data-theme="dark"] .scene-vignette {
+  background: radial-gradient(
+    ellipse 55% 55% at 50% 60%,
+    color-mix(in srgb, var(--color-amber-500) 24%, transparent) 0%,
+    color-mix(in srgb, var(--color-amber-500) 24%, transparent) 35%,
+    color-mix(in srgb, var(--color-gold) 10%, transparent) 35%,
+    color-mix(in srgb, var(--color-gold) 10%, transparent) 65%,
+    transparent 65%
   );
 }
 

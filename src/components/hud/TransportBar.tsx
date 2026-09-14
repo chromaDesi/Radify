@@ -40,8 +40,8 @@ export function TransportBar() {
       <PixelPanel title="Now playing">
         {currentTrack ? (
           <>
-            <p className="font-body text-base text-ink">{currentTrack.title}</p>
-            <p className="font-body text-sm text-ink-soft">{currentTrack.artistPrimary}</p>
+            <p className="font-body text-base text-fg">{currentTrack.title}</p>
+            <p className="font-body text-sm text-fg-soft">{currentTrack.artistPrimary}</p>
             <p className="mt-1 font-ui text-[10px] text-smoke">
               {formatMs(positionMs)} / {formatMs(currentTrack.durationMs)} · track{" "}
               {currentIndex + 1} of {queue.length}
@@ -68,7 +68,7 @@ export function TransportBar() {
             </div>
           </>
         ) : (
-          <p className="font-body text-sm text-ink-soft">Loading first track…</p>
+          <p className="font-body text-sm text-fg-soft">Loading first track…</p>
         )}
       </PixelPanel>
     </div>

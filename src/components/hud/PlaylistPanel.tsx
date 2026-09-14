@@ -35,7 +35,7 @@ export function PlaylistPanel() {
         <ul className="flex flex-1 flex-col gap-2 overflow-y-auto">
           {MOCK_PLAYLISTS.map((playlist) => (
             <li key={playlist.id}>
-              <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink-soft">
+              <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-fg-soft">
                 <PixelCheckbox
                   checked={selectedIds.includes(playlist.id)}
                   onChange={() => toggleSource(playlist.id)}
@@ -49,7 +49,7 @@ export function PlaylistPanel() {
           ))}
         </ul>
 
-        <div className="mt-4 flex items-center gap-3 font-ui text-xs text-ink">
+        <div className="mt-4 flex items-center gap-3 font-ui text-xs text-fg">
           <span>Mix:</span>
           <PixelButton
             size="sm"
