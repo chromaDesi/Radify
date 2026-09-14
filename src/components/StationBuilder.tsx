@@ -2,45 +2,16 @@
 
 import { useStationStore } from "@/lib/store/useStationStore";
 import { MOCK_PLAYLISTS } from "@/lib/mockData";
+import { PixelPanel } from "@/components/ui/PixelPanel";
+import { PixelButton } from "@/components/ui/PixelButton";
+import { PixelCheckbox } from "@/components/ui/PixelCheckbox";
+import { PixelIcon } from "@/components/ui/PixelIcon";
 
 function formatMs(ms: number): string {
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
-
-function PixelButton({
-  children,
-  onClick,
-  disabled,
-  variant = "default",
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  variant?: "default" | "primary";
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`border-2 border-ink px-4 py-2 font-ui text-xs shadow-pixel-sm transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-pixel-sm ${
-        variant === "primary"
-          ? "bg-ember text-cream hover:bg-ember-dark"
-          : "bg-amber-300 text-ink hover:bg-amber-500"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
-function PixelPanel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="border-2 border-ink bg-cream-dark p-4 shadow-pixel">{children}</div>
-  );
 }
 
 export function StationBuilder() {
@@ -63,18 +34,16 @@ export function StationBuilder() {
 
   return (
     <div className="flex w-full max-w-md flex-col gap-4">
-      <PixelPanel>
-        <h2 className="mb-3 font-ui text-xs text-ink">Pick your playlists</h2>
+      <PixelPanel title="Pick your playlists">
         <ul className="flex flex-col gap-2">
           {MOCK_PLAYLISTS.map((playlist) => (
             <li key={playlist.id}>
               <label className="flex cursor-pointer items-center gap-2 font-body text-sm text-ink-soft">
-                <input
-                  type="checkbox"
+                <PixelCheckbox
                   checked={selectedIds.includes(playlist.id)}
                   onChange={() => toggleSource(playlist.id)}
                   disabled={started}
-                  className="h-4 w-4 accent-ember"
+                  ariaLabel={playlist.name}
                 />
                 {playlist.name}
                 <span className="text-xs text-smoke">
@@ -87,26 +56,22 @@ export function StationBuilder() {
 
         <div className="mt-4 flex items-center gap-3 font-ui text-xs text-ink">
           <span>Mix:</span>
-          <button
-            type="button"
+          <PixelButton
+            size="sm"
             disabled={started}
             onClick={() => setWeightingMode("equal")}
-            className={`border-2 border-ink px-2 py-1 disabled:opacity-50 ${
-              weightingMode === "equal" ? "bg-gold" : "bg-cream"
-            }`}
+            className={weightingMode === "equal" ? "bg-gold" : "bg-cream"}
           >
             Equal
-          </button>
-          <button
-            type="button"
+          </PixelButton>
+          <PixelButton
+            size="sm"
             disabled={started}
             onClick={() => setWeightingMode("proportional")}
-            className={`border-2 border-ink px-2 py-1 disabled:opacity-50 ${
-              weightingMode === "proportional" ? "bg-gold" : "bg-cream"
-            }`}
+            className={weightingMode === "proportional" ? "bg-gold" : "bg-cream"}
           >
             Proportional
-          </button>
+          </PixelButton>
         </div>
 
         {!started && (
@@ -123,8 +88,7 @@ export function StationBuilder() {
       </PixelPanel>
 
       {started && (
-        <PixelPanel>
-          <h2 className="mb-2 font-ui text-xs text-ink">Now playing</h2>
+        <PixelPanel title="Now playing">
           {currentTrack ? (
             <>
               <p className="font-body text-base text-ink">{currentTrack.title}</p>
@@ -139,11 +103,19 @@ export function StationBuilder() {
                 </p>
               )}
               <div className="mt-3 flex gap-2">
-                <PixelButton onClick={() => void prev()}>⏮ Prev</PixelButton>
-                <PixelButton onClick={() => void togglePlayPause()}>
-                  {playbackState === "playing" ? "⏸ Pause" : "▶ Play"}
+                <PixelButton variant="icon" ariaLabel="Previous track" onClick={() => void prev()}>
+                  <PixelIcon name="prev" />
                 </PixelButton>
-                <PixelButton onClick={() => void skip()}>Skip ⏭</PixelButton>
+                <PixelButton
+                  variant="icon"
+                  ariaLabel={playbackState === "playing" ? "Pause" : "Play"}
+                  onClick={() => void togglePlayPause()}
+                >
+                  <PixelIcon name={playbackState === "playing" ? "pause" : "play"} />
+                </PixelButton>
+                <PixelButton variant="icon" ariaLabel="Skip track" onClick={() => void skip()}>
+                  <PixelIcon name="next" />
+                </PixelButton>
               </div>
             </>
           ) : (
