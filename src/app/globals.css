@@ -117,16 +117,79 @@
   }
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  overflow: hidden;
+}
+
+/*
+  World tiles: seamless textures repeated via background-repeat, sized
+  to an exact integer multiple of their native texel size. This is how
+  the scene fills any viewport without ever stretching a pixel-art
+  sprite — see CLAUDE.md and the plan for the full rationale.
+*/
+@layer components {
+  .tile-wall {
+    background-image: url("/scene/tile-wall.png");
+    background-repeat: repeat;
+    background-size: calc(16 * var(--px)) calc(16 * var(--px));
+  }
+  .tile-wainscot {
+    background-image: url("/scene/tile-wainscot.png");
+    background-repeat: repeat;
+    background-size: calc(16 * var(--px)) calc(16 * var(--px));
+  }
+  .tile-floor {
+    background-image: url("/scene/tile-floor.png");
+    background-repeat: repeat;
+    background-size: calc(16 * var(--px)) calc(16 * var(--px));
+  }
+  .trim-rail {
+    background-image: url("/scene/trim-rail.png");
+    background-repeat: repeat-x;
+    background-size: calc(16 * var(--px)) calc(6 * var(--px));
+  }
+  .trim-baseboard {
+    background-image: url("/scene/trim-baseboard.png");
+    background-repeat: repeat-x;
+    background-size: calc(16 * var(--px)) calc(4 * var(--px));
+  }
+  .tile-dust {
+    background-image: url("/scene/tile-dust.png");
+    background-repeat: repeat;
+    background-size: calc(48 * var(--px)) calc(48 * var(--px));
+  }
 }
 
 /* pixel art must never be smoothed — inherited, so this also reaches
    CSS background-image tiles, not just <img>/<canvas>/<svg> elements */
 html {
   image-rendering: pixelated;
+}
+
+/*
+  Ambient wash: a hard-stepped radial gradient standing in for the old
+  glow-overlay.png sprite. A gradient has no texels, so it fills any
+  viewport for free with no scaling/blur concerns, and the hard color
+  stops (not a smooth fade) keep it in the same banded idiom as the
+  rest of the art.
+*/
+.scene-vignette {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 35%,
+    color-mix(in srgb, var(--color-amber-300) 28%, transparent) 0%,
+    color-mix(in srgb, var(--color-amber-300) 28%, transparent) 40%,
+    color-mix(in srgb, var(--color-amber-100) 14%, transparent) 40%,
+    color-mix(in srgb, var(--color-amber-100) 14%, transparent) 70%,
+    transparent 70%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

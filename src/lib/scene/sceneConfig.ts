@@ -14,15 +14,23 @@ export const TILE = 16;
 
 export const MIN_VIEWPORT = { width: 1280, height: 720 };
 
-/** Jukebox group native size, in hero-tier texels. */
-const HERO_TEXELS = { width: 48, height: 64 };
+/** Jukebox group native size, in hero-tier texels — must match HW/HH in scripts/gen-scene.py. */
+export const HERO_TEXELS = { width: 48, height: 64 };
+
+/**
+ * Floor-band height, in world-tier texels — how far every bottom-anchored
+ * prop/hero sits above the viewport bottom. Also literally the CSS height
+ * of the floor tile band in DinerScene, so props' feet land exactly on
+ * the floor's top edge. Not a multiple of TILE (16); the floor pattern
+ * clips mid-tile at the very bottom edge, which is imperceptible there.
+ */
+export const FLOOR_BAND_TEXELS = 30;
 
 /** Reserved center-stage rect for the jukebox hero, floor-anchored. */
 export const STAGE = {
   widthPx: HERO_TEXELS.width * PX_HERO, // 384
   heightPx: HERO_TEXELS.height * PX_HERO, // 512
-  /** Clearance between the jukebox's feet and the floor/viewport bottom. */
-  bottomOffsetPx: 30 * PX, // 120
+  bottomOffsetPx: FLOOR_BAND_TEXELS * PX, // 120
 };
 
 /** HUD dock geometry, in CSS px (texels * PX), matching the Tailwind classes on each component. */

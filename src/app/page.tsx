@@ -1,18 +1,17 @@
-import { DinerScene } from "@/components/DinerScene";
+import { DinerScene } from "@/components/scene/DinerScene";
 import { StationBuilder } from "@/components/StationBuilder";
 
+// Temporary: StationBuilder floats over the full-bleed scene as-is so
+// the scene itself is independently reviewable. The HUD layer (top
+// bar, docked playlist panel, transport bar, settings) replaces this
+// stacked-card layout entirely in a later step.
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-8 bg-cream px-4 py-16">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="font-logo text-2xl text-ink sm:text-3xl">Radify</h1>
-        <p className="max-w-md font-ui text-sm text-ink-soft sm:text-base">
-          Bring your Spotify and YouTube playlists into one diner jukebox,
-          mixed and playing like a radio station.
-        </p>
-      </div>
+    <div className="fixed inset-0 overflow-hidden">
       <DinerScene />
-      <StationBuilder />
+      <div className="absolute inset-x-0 bottom-4 flex justify-center px-4">
+        <StationBuilder />
+      </div>
     </div>
   );
 }
