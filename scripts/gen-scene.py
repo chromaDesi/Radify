@@ -28,7 +28,14 @@ from pixelkit import (
     GOLD,
     INK,
     INK_SOFT,
+    MATERIALS,
     NEON,
+    NIGHT_MATERIALS,
+    NIGHT_MOON,
+    NIGHT_SHAFT_RGB,
+    NIGHT_SKY,
+    NIGHT_SKY_DARK,
+    NIGHT_WOOD_DARK,
     TRANSPARENT,
     VINYL,
     WOOD,
@@ -43,49 +50,55 @@ from pixelkit import (
 )
 
 OUT = "public/scene"
+OUT_NIGHT = "public/scene-dark"
 TILE = 16  # texels per repeating world tile
 
 
 # ------------------------------------------------------------- tiles
-def make_tile_wall():
+def make_tile_wall(night=False):
+    m = NIGHT_MATERIALS if night else MATERIALS
     img = new_canvas(TILE, TILE)
     d = ImageDraw.Draw(img)
-    block(d, 0, 0, TILE, "wallpaper")
-    speckle(d, (2, 2, TILE - 3, TILE - 3), CREAM_DARK, 2, random.Random(1))
+    block(d, 0, 0, TILE, m["wallpaper"])
+    speckle(d, (2, 2, TILE - 3, TILE - 3), m["wallpaper"][2], 2, random.Random(1))
     return img
 
 
-def make_tile_wainscot():
+def make_tile_wainscot(night=False):
+    m = NIGHT_MATERIALS if night else MATERIALS
     img = new_canvas(TILE, TILE)
     d = ImageDraw.Draw(img)
-    block(d, 0, 0, TILE, "wood_panel")
-    speckle(d, (2, 2, TILE - 3, TILE - 3), WOOD_DARK, 2, random.Random(2))
+    block(d, 0, 0, TILE, m["wood_panel"])
+    speckle(d, (2, 2, TILE - 3, TILE - 3), m["wood_panel"][2], 2, random.Random(2))
     return img
 
 
-def make_tile_floor():
+def make_tile_floor(night=False):
+    m = NIGHT_MATERIALS if night else MATERIALS
     img = new_canvas(TILE, TILE)
     d = ImageDraw.Draw(img)
     half = TILE // 2
-    block(d, 0, 0, half, "floor_light")
-    block(d, half, 0, half, "floor_dark")
-    block(d, 0, half, half, "floor_dark")
-    block(d, half, half, half, "floor_light")
+    block(d, 0, 0, half, m["floor_light"])
+    block(d, half, 0, half, m["floor_dark"])
+    block(d, 0, half, half, m["floor_dark"])
+    block(d, half, half, half, m["floor_light"])
     return img
 
 
-def make_trim_rail():
+def make_trim_rail(night=False):
+    m = NIGHT_MATERIALS if night else MATERIALS
     img = new_canvas(TILE, 6)
     d = ImageDraw.Draw(img)
-    bevel_rect(d, 0, 0, TILE - 1, 1, "gold_trim")
-    bevel_rect(d, 0, 2, TILE - 1, 5, "wood_panel")
+    bevel_rect(d, 0, 0, TILE - 1, 1, m["gold_trim"])
+    bevel_rect(d, 0, 2, TILE - 1, 5, m["wood_panel"])
     return img
 
 
-def make_trim_baseboard():
+def make_trim_baseboard(night=False):
+    m = NIGHT_MATERIALS if night else MATERIALS
     img = new_canvas(TILE, 4)
     d = ImageDraw.Draw(img)
-    bevel_rect(d, 0, 0, TILE - 1, 3, "wood_panel")
+    bevel_rect(d, 0, 0, TILE - 1, 3, m["wood_panel"])
     return img
 
 
@@ -102,28 +115,45 @@ def make_tile_dust(size=48, seed=7):
 
 
 # ------------------------------------------------------------- props
-def make_window_group():
+def make_window_group(night=False):
     """Window with a hard-stepped light shaft baked in, terminating at
     the sprite's bottom edge (positioned flush with the floor line)."""
+    m = NIGHT_MATERIALS if night else MATERIALS
     w, h = 56, 88
     img = new_canvas(w, h)
     d = ImageDraw.Draw(img)
 
     wx0, wy0, wx1, wy1 = 6, 4, 49, 43
-    bevel_rect(d, wx0 - 2, wy0 - 2, wx1 + 2, wy1 + 2, "wood_panel")
+    bevel_rect(d, wx0 - 2, wy0 - 2, wx1 + 2, wy1 + 2, m["wood_panel"])
 
-    # two flat panes — sky, then a sun-block band — instead of a gradient
     midy = (wy0 + wy1) // 2
-    d.rectangle([wx0, wy0, wx1, midy], fill=AMBER_300)
-    d.rectangle([wx0, midy + 1, wx1, wy1], fill=GOLD)
+    mullion_color = NIGHT_WOOD_DARK if night else WOOD_DARK
+
+    if night:
+        # night sky, two flat panes, plus a blocky moon in the upper pane
+        d.rectangle([wx0, wy0, wx1, midy], fill=NIGHT_SKY)
+        d.rectangle([wx0, midy + 1, wx1, wy1], fill=NIGHT_SKY_DARK)
+        moon_cx, moon_cy, moon_r = wx0 + 10, wy0 + 8, 4
+        d.ellipse(
+            [moon_cx - moon_r, moon_cy - moon_r, moon_cx + moon_r, moon_cy + moon_r],
+            fill=NIGHT_MOON,
+            outline=INK,
+        )
+    else:
+        # two flat panes — sky, then a sun-block band — instead of a gradient
+        d.rectangle([wx0, wy0, wx1, midy], fill=AMBER_300)
+        d.rectangle([wx0, midy + 1, wx1, wy1], fill=GOLD)
+
     d.rectangle([wx0, wy0, wx1, wy1], outline=INK, width=1)
 
     # mullions
     midx = (wx0 + wx1) // 2
-    d.rectangle([midx - 1, wy0, midx + 1, wy1], fill=WOOD_DARK)
-    d.rectangle([wx0, midy - 1, wx1, midy + 1], fill=WOOD_DARK)
+    d.rectangle([midx - 1, wy0, midx + 1, wy1], fill=mullion_color)
+    d.rectangle([wx0, midy - 1, wx1, midy + 1], fill=mullion_color)
 
-    # hard-stepped light shaft, 4 solid alpha tiers, wide staircase steps
+    # hard-stepped light shaft, 4 solid alpha tiers, wide staircase steps —
+    # a cool moonlit blue at night instead of warm daylight amber
+    shaft_rgb = NIGHT_SHAFT_RGB if night else AMBER_100_RGB
     shaft_top = wy1 + 3
     tiers = [(0.55, 4), (0.4, 4), (0.28, 5), (0.18, h - shaft_top - 13)]
     left0, right0 = wx0 + 3, wx1 - 3
@@ -133,8 +163,8 @@ def make_window_group():
         spread = step_i * 5
         left = max(0, left0 - spread)
         right = min(w - 1, right0 + spread)
-        a = int(255 * alpha_f)
-        d.rectangle([left, y, right, y + step_h - 1], fill=(*AMBER_100_RGB, a))
+        a = int(255 * alpha_f * (0.6 if night else 1))
+        d.rectangle([left, y, right, y + step_h - 1], fill=(*shaft_rgb, a))
         y += step_h
         step_i += 1
 
@@ -321,26 +351,37 @@ def main():
     import os
 
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(OUT_NIGHT, exist_ok=True)
 
+    # day (default) variant
     save_native(make_tile_wall(), f"{OUT}/tile-wall.png")
     save_native(make_tile_wainscot(), f"{OUT}/tile-wainscot.png")
     save_native(make_tile_floor(), f"{OUT}/tile-floor.png")
     save_native(make_trim_rail(), f"{OUT}/trim-rail.png")
     save_native(make_trim_baseboard(), f"{OUT}/trim-baseboard.png")
     save_native(make_tile_dust(), f"{OUT}/tile-dust.png")
-
     save_native(make_window_group(), f"{OUT}/window-group.png")
     save_native(make_booth(), f"{OUT}/booth.png")
 
+    # hero group — same asset in both themes, see NIGHT_MATERIALS docstring
     save_native(make_jukebox_back(), f"{OUT}/jukebox-back.png")
     save_native(make_jukebox_front(), f"{OUT}/jukebox-front.png")
     save_native(make_jukebox_glow(), f"{OUT}/jukebox-glow.png")
     save_native(make_vinyl_sheet(), f"{OUT}/vinyl-spin.png")
     save_native(make_tonearm_sheet(), f"{OUT}/tonearm-sweep.png")
 
+    # night variant — ambient room materials only
+    save_native(make_tile_wall(night=True), f"{OUT_NIGHT}/tile-wall.png")
+    save_native(make_tile_wainscot(night=True), f"{OUT_NIGHT}/tile-wainscot.png")
+    save_native(make_tile_floor(night=True), f"{OUT_NIGHT}/tile-floor.png")
+    save_native(make_trim_rail(night=True), f"{OUT_NIGHT}/trim-rail.png")
+    save_native(make_trim_baseboard(night=True), f"{OUT_NIGHT}/trim-baseboard.png")
+    save_native(make_window_group(night=True), f"{OUT_NIGHT}/window-group.png")
+
     if "--preview" in sys.argv:
         for name in TILES:
             preview_tiled_3x3(f"{OUT}/{name}.png", f"{OUT}/_preview-{name}.png")
+            preview_tiled_3x3(f"{OUT_NIGHT}/{name}.png", f"{OUT_NIGHT}/_preview-{name}.png")
 
 
 if __name__ == "__main__":

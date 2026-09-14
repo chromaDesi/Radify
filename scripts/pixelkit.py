@@ -45,6 +45,42 @@ MATERIALS = {
     "glass_neon": (CREAM, NEON, INK_SOFT),
 }
 
+# Night-diner palette — deep blues/violets standing in for daylight
+# ambers. Only ambient-room materials get a night ramp: the jukebox,
+# its vinyl/tonearm, and the booth stay their warm daytime colors in
+# both variants, since they read as objects lit by the jukebox's own
+# glow rather than by the room's ambient light — that contrast (warm
+# glowing hero against a cool dark room) is the whole point of the
+# night mode, not something to flatten away.
+NIGHT_VIOLET_LIGHT = (95, 89, 145, 255)
+NIGHT_VIOLET = (58, 51, 92, 255)
+NIGHT_VIOLET_DARK = (36, 31, 61, 255)
+NIGHT_WOOD_LIGHT = (92, 64, 48, 255)
+NIGHT_WOOD = (61, 42, 31, 255)
+NIGHT_WOOD_DARK = (36, 23, 19, 255)
+NIGHT_TILE_A_LIGHT = (67, 61, 105, 255)
+NIGHT_TILE_A = (47, 42, 79, 255)
+NIGHT_TILE_A_DARK = (30, 26, 56, 255)
+NIGHT_TILE_B_LIGHT = (79, 57, 87, 255)
+NIGHT_TILE_B = (55, 40, 68, 255)
+NIGHT_TILE_B_DARK = (35, 25, 44, 255)
+NIGHT_SKY = (36, 28, 64, 255)
+NIGHT_SKY_DARK = (26, 20, 48, 255)
+NIGHT_MOON = (223, 214, 245, 255)
+NIGHT_SHAFT_RGB = (140, 150, 210)
+
+NIGHT_MATERIALS = {
+    "wallpaper": (NIGHT_VIOLET_LIGHT, NIGHT_VIOLET, NIGHT_VIOLET_DARK),
+    "wood_panel": (NIGHT_WOOD_LIGHT, NIGHT_WOOD, NIGHT_WOOD_DARK),
+    "floor_light": (NIGHT_TILE_A_LIGHT, NIGHT_TILE_A, NIGHT_TILE_A_DARK),
+    "floor_dark": (NIGHT_TILE_B_LIGHT, NIGHT_TILE_B, NIGHT_TILE_B_DARK),
+    # unchanged from MATERIALS — see note above
+    "gold_trim": (GOLD, AMBER_500, AMBER_700),
+    "upholstery": (EMBER, EMBER_DARK, INK_SOFT),
+    "vinyl": (INK_SOFT, VINYL, INK),
+    "glass_neon": (CREAM, NEON, INK_SOFT),
+}
+
 
 def new_canvas(w, h):
     return Image.new("RGBA", (w, h), TRANSPARENT)
