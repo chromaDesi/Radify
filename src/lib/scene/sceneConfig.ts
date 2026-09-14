@@ -33,11 +33,34 @@ export const STAGE = {
   bottomOffsetPx: FLOOR_BAND_TEXELS * PX, // 120
 };
 
-/** HUD dock geometry, in CSS px (texels * PX), matching the Tailwind classes on each component. */
-export const DOCKS = {
-  topBar: { top: 4 * PX, insetX: 4 * PX, height: 14 * PX },
-  playlistPanel: { left: 4 * PX, top: 22 * PX, width: 72 * PX },
-  transportBar: { bottom: 4 * PX, width: 140 * PX, height: 22 * PX },
+/**
+ * HUD dock geometry, in world-tier texels — the actual source of truth
+ * for both the CSS calc() strings each HUD component uses and the
+ * derived-px Rects below (which assume the default PX so the geometry
+ * test has fixed numbers to check against).
+ */
+export const DOCK_TEXELS = {
+  topBar: { top: 4, insetX: 4, height: 14 },
+  playlistPanel: { left: 4, top: 22, width: 72 },
+  transportBar: { bottom: 4, width: 140, height: 22 },
+};
+
+const DOCKS = {
+  topBar: {
+    top: DOCK_TEXELS.topBar.top * PX,
+    insetX: DOCK_TEXELS.topBar.insetX * PX,
+    height: DOCK_TEXELS.topBar.height * PX,
+  },
+  playlistPanel: {
+    left: DOCK_TEXELS.playlistPanel.left * PX,
+    top: DOCK_TEXELS.playlistPanel.top * PX,
+    width: DOCK_TEXELS.playlistPanel.width * PX,
+  },
+  transportBar: {
+    bottom: DOCK_TEXELS.transportBar.bottom * PX,
+    width: DOCK_TEXELS.transportBar.width * PX,
+    height: DOCK_TEXELS.transportBar.height * PX,
+  },
 };
 
 export interface Rect {
