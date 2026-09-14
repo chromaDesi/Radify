@@ -212,6 +212,23 @@ html {
   stops (not a smooth fade) keep it in the same banded idiom as the
   rest of the art.
 */
+/*
+  Native <dialog> for the settings modal — gets focus trap + Esc-to-close
+  for free. Reset the UA default box/position so our own PixelPanel-style
+  border/shadow (applied inline in SettingsModal.tsx) is the only frame.
+*/
+dialog.settings-dialog {
+  margin: auto;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+dialog.settings-dialog::backdrop {
+  background-image: url("/ui/dither-dim.png");
+  background-repeat: repeat;
+  background-size: calc(4 * var(--px)) calc(4 * var(--px));
+}
+
 .scene-vignette {
   background: radial-gradient(
     ellipse 70% 60% at 50% 35%,

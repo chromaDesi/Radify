@@ -1,8 +1,12 @@
+"use client";
+
 import { DOCK_TEXELS } from "@/lib/scene/sceneConfig";
+import { useUiStore } from "@/lib/store/useUiStore";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { PixelIcon } from "@/components/ui/PixelIcon";
 
-export function HudTopBar({ onOpenSettings }: { onOpenSettings?: () => void }) {
+export function HudTopBar() {
+  const openSettings = useUiStore((s) => s.openSettings);
   const { top, insetX, height } = DOCK_TEXELS.topBar;
 
   return (
@@ -25,7 +29,7 @@ export function HudTopBar({ onOpenSettings }: { onOpenSettings?: () => void }) {
         variant="icon"
         ariaLabel="Settings"
         className="pointer-events-auto"
-        onClick={onOpenSettings}
+        onClick={openSettings}
       >
         <PixelIcon name="gear" />
       </PixelButton>
