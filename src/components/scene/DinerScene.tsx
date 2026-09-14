@@ -1,5 +1,6 @@
 import { FLOOR_BAND_TEXELS, HERO_TEXELS } from "@/lib/scene/sceneConfig";
 import { SceneSprite } from "./SceneSprite";
+import { Tonearm, VinylRecord } from "./JukeboxMechanism";
 
 const WAINSCOT_TEXELS = 32; // 2 tiles tall
 const RAIL_TEXELS = 6;
@@ -7,14 +8,6 @@ const BASEBOARD_TEXELS = 4;
 
 const WINDOW_TEXELS = { width: 56, height: 88 };
 const BOOTH_TEXELS = { width: 56, height: 48 };
-
-// Native offsets of the vinyl/tonearm within the jukebox's 48x64 texel
-// space, found empirically in scripts/gen-scene.py's preview compositor.
-// JukeboxMechanism (the animated client version) uses these same values.
-const VINYL_OFFSET = { x: 7, y: 17 };
-const VINYL_SIZE = 32;
-const ARM_OFFSET = { x: 14, y: 19 };
-const ARM_FRAME = { width: 28, height: 24 };
 
 const floorBand = `calc(${FLOOR_BAND_TEXELS} * var(--px))`;
 
@@ -80,21 +73,7 @@ export function DinerScene() {
           className="absolute inset-0"
         />
 
-        {/* static frame-0 placeholders — JukeboxMechanism (task 13)
-            replaces these with the real animated, playback-aware version */}
-        <div
-          className="absolute"
-          style={{
-            left: `calc(${VINYL_OFFSET.x} * var(--px-hero))`,
-            top: `calc(${VINYL_OFFSET.y} * var(--px-hero))`,
-            width: `calc(${VINYL_SIZE} * var(--px-hero))`,
-            height: `calc(${VINYL_SIZE} * var(--px-hero))`,
-            backgroundImage: "url(/scene/vinyl-spin.png)",
-            backgroundPosition: "0 0",
-            backgroundSize: `calc(${VINYL_SIZE * 8} * var(--px-hero)) calc(${VINYL_SIZE} * var(--px-hero))`,
-            imageRendering: "pixelated",
-          }}
-        />
+        <VinylRecord />
 
         <SceneSprite
           src="/scene/jukebox-front.png"
@@ -105,19 +84,7 @@ export function DinerScene() {
           className="absolute inset-0"
         />
 
-        <div
-          className="absolute"
-          style={{
-            left: `calc(${ARM_OFFSET.x} * var(--px-hero))`,
-            top: `calc(${ARM_OFFSET.y} * var(--px-hero))`,
-            width: `calc(${ARM_FRAME.width} * var(--px-hero))`,
-            height: `calc(${ARM_FRAME.height} * var(--px-hero))`,
-            backgroundImage: "url(/scene/tonearm-sweep.png)",
-            backgroundPosition: "0 0",
-            backgroundSize: `calc(${ARM_FRAME.width * 7} * var(--px-hero)) calc(${ARM_FRAME.height} * var(--px-hero))`,
-            imageRendering: "pixelated",
-          }}
-        />
+        <Tonearm />
 
         <SceneSprite
           src="/scene/jukebox-glow.png"
